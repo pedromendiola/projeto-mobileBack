@@ -1,7 +1,7 @@
 //Teste de Requisições REST - Prestadores
 //@baseURL = https://backdogwalker.herokuapp.com/api
 @baseURL = http://localhost:4000/api
-@id = 6267f34532ae23b306a82e20
+@id = 629e66f0a458716b10142e59
 @razao = capura
 ###
 // GET - Lista todos os prestadores

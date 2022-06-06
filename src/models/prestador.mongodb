@@ -56,7 +56,7 @@ db.createCollection('prestador', {
 
 //Criando um índice único no campo email
 db.prestador.createIndex({ 'email': 1 }, { unique: true })
-
+use('prestadorBase')
 //Insere um novo registro
 db.prestador.insertOne({
     "nome": "Aparecida Ribeiro",

@@ -32,7 +32,7 @@ db.createCollection('usuarios', {
                     description: 'Usuário está ativo?'
                 },
                 tipo: {
-                    enum: ['Admin', 'Usuario'],
+                    enum: ['Admin', 'Usuario', 'Cliente'],
                     description: 'O tipo do usuário informado deve ser válido'
                 },
                 avatar: {
@@ -50,13 +50,14 @@ db.createCollection('usuarios', {
 //Criando o índice único
 db.usuarios.createIndex({ 'email': 1 }, { unique: true })
 
+use('prestadorBase')
 //Insere um novo registro
 db.usuarios.insertOne({
     'nome': 'Maria Alves',
     'email': 'mariaalves@uol.com',
     'senha': '123Mudar',
     'ativo': true,
-    'tipo': 'Usuario',
+    'tipo': 'Cliente',
     'avatar': 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=Maria+Gusmão'
 })
 
