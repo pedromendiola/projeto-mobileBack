@@ -4,7 +4,7 @@ import { connectToDatabase } from '../utils/mongodb.js'
 import { check, validationResult } from 'express-validator'
 
 const router = express.Router()
-const nomeCollection = 'prestadores'
+const nomeCollection = 'prestador'
 const { db, ObjectId } = await connectToDatabase()
 
 /**********************************************
@@ -12,81 +12,59 @@ const { db, ObjectId } = await connectToDatabase()
  * 
  **********************************************/
 const validaPrestador = [
-    check('cnpj')
-    .not().isEmpty().trim().withMessage('É obrigatório informar o CNPJ do Prestador')
-    .isNumeric().withMessage('O CNPJ não pode conter caracteres especiais, apenas números')
-    .isLength({ min: 14, max: 14 }).withMessage('O tamanho do CNPJ informado é inválido.')
-    .custom((value, { req }) => {
-      return db.collection(nomeCollection).find({ cnpj: { $eq: value } }).toArray()
-        .then((cnpj) => {
-          if (cnpj.length && !req.body._id) {
-            return Promise.reject(`O cnpj ${value} já está informado em outro Prestador`)
-          }
-        })
-    }),
-    check('razao_social')
-        .not().isEmpty().trim().withMessage('É obrigatório informar a Razão Social')
-        .isAlphanumeric('pt-BR', { ignore: '/. ' }).withMessage('A Razão Social deve conter apenas caracteres alfanuméricos')
-        .isLength({ min: 3 }).withMessage('A Razão Social é muito curta. Informe ao menos 3 caracteres')
-        .isLength({ max: 100 }).withMessage('A Razão Social é muito longa. Informe no máximo 100 caracteres'),
-    check('cnae_fiscal', 'O código do CNAE (Classificação Nacional de Atividades Econômicas) deve ser um número').isNumeric(),
-    check('nome_fantasia').optional({nullable: true}),
-    check('data_inicio_atividade','A data de início de atividade é inválida')
-    .optional({nullable: true})
-    .isDate({format: 'YYYY-MM-DD'}),
-    check('localizacao.type','O tipo (type) da localização deve conter o valor Point').equals('Point'),
-    check('localizacao.coordinates','As coordenadas (coordinates) da localização devem ser um array com Latitude e Longitude').isArray()
+    check('nome', 'Nome do Prestador é obrigatório').not().isEmpty(),
+    check('servico', 'Informar o serviço do Prestador é obrigatório').not().isEmpty(),
+    check('celular', 'O celular deve ser um número').isNumeric()
 ]
 
 
-check('text_settings_descriptions.*.value')
-
 /**********************************************
- * GET /api/prestadores
+ * GET /prestadores/
+ * Lista todos os prestadores
  **********************************************/
- router.get('/', async (req, res) => {
-    /* 
-     #swagger.tags = ['Prestadores']
-     #swagger.description = 'Endpoint para obter todos os Prestadores de Serviço do sistema.' 
-     */
+router.get("/", async (req, res) => {
+    /* #swagger.tags = ['Prestadores']
+  #swagger.description = 'Endpoint que retorna os prestadores em um raio de 20Km da latitude e longitude informados' 
+  */
+
     try {
-      db.collection(nomeCollection).find({}, {
-        projection: { senha: false }
-      }).sort({ nome: 1 }).toArray((err, docs) => {
-        if (!err) {
-          /* 
-          #swagger.responses[200] = { 
-       schema: { "$ref": "#/definitions/Prestadores" },
-       description: "Listagem dos prestadores de serviço obtida com sucesso" } 
-       */
-          res.status(200).json(docs)
-        }
-      })
+        db.collection(nomeCollection).find({}, {
+            projection: { senha: false }
+        }).sort({ nome: 1 }).toArray((err, docs) => {
+            if (!err) {
+                /* 
+                #swagger.responses[200] = { 
+             schema: { "$ref": "#/definitions/Prestadores" },
+             description: "Listagem dos prestadores de serviço obtida com sucesso" } 
+             */
+                res.status(200).json(docs)
+            }
+        })
     } catch (err) {
-      /* 
-         #swagger.responses[500] = { 
-      schema: { "$ref": "#/definitions/Erro" },
-      description: "Erro ao obter a listagem dos prestadores" } 
-      */
-      res.status(500).json({
-        errors: [
-          {
-            value: `${err.message}`,
-            msg: 'Erro ao obter a listagem dos prestadores de serviço',
-            param: '/'
-          }
-        ]
-      })
+        /* 
+           #swagger.responses[500] = { 
+        schema: { "$ref": "#/definitions/Erro" },
+        description: "Erro ao obter a listagem dos prestadores" } 
+        */
+        res.status(500).json({
+            errors: [
+                {
+                    value: `${err.message}`,
+                    msg: 'Erro ao obter a listagem dos prestadores',
+                    param: '/'
+                }
+            ]
+        })
     }
-  })
+})
 
 /**********************************************
- * GET /prestadores/id/:id
+ * GET /prestadores/:id
  **********************************************/
-router.get("/id/:id", async (req, res) => {
-      /* #swagger.tags = ['Prestadores']
-      #swagger.description = 'Endpoint que retorna os dados do prestador filtrando pelo id' 
-      */
+router.get("/:id", async (req, res) => {
+    /* #swagger.tags = ['Prestadores']
+    #swagger.description = 'Endpoint que retorna os dados do prestador filtrando pelo id' 
+    */
     try {
         db.collection(nomeCollection).find({ "_id": { $eq: ObjectId(req.params.id) } }).toArray((err, docs) => {
             if (err) {
@@ -101,14 +79,14 @@ router.get("/id/:id", async (req, res) => {
 })
 
 /**********************************************
- * GET /prestadores/razao/:razao
+ * GET /prestadores/nome/:nome
  **********************************************/
-router.get("/razao/:razao", async (req, res) => {
+router.get("/nome/:nome", async (req, res) => {
     /* #swagger.tags = ['Prestadores']
-      #swagger.description = 'Endpoint que retorna os dados do prestador filtrando por parte da Razão Social' 
+      #swagger.description = 'Endpoint que retorna os dados do prestador filtrando por parte do nome' 
       */
     try {
-        db.collection(nomeCollection).find({ razao_social: { $regex: req.params.razao, $options: "i" } }).toArray((err, docs) => {
+        db.collection(nomeCollection).find({ nome: { $regex: req.params.nome, $options: "i" } }).toArray((err, docs) => {
             if (err) {
                 res.status(400).json(err) //bad request
             } else {
@@ -124,7 +102,7 @@ router.get("/razao/:razao", async (req, res) => {
  * POST /prestadores/
  **********************************************/
 router.post('/', validaPrestador, async (req, res) => {
-    /* #swagger.tags = ['Prestadores']
+    /* #swagger.tags = ['Prestador']
       #swagger.description = 'Endpoint que inclui um novo prestador' 
       */
     const errors = validationResult(req)
@@ -145,8 +123,8 @@ router.post('/', validaPrestador, async (req, res) => {
  * Alterar um prestador pelo ID
  **********************************************/
 router.put('/', validaPrestador, async (req, res) => {
-  let idDocumento = req.body._id
-  delete req.body._id //removendo o ID do body para o update não apresentar o erro 66
+    let idDocumento = req.body._id
+    delete req.body._id //removendo o ID do body para o update não apresentar o erro 66
     /* #swagger.tags = ['Prestadores']
       #swagger.description = 'Endpoint que permite alterar os dados do prestador pelo id' 
       */
@@ -169,6 +147,8 @@ router.put('/', validaPrestador, async (req, res) => {
  * DELETE /prestadores/
  **********************************************/
 router.delete('/:id', async (req, res) => {
+    //let idDocumento = req.body._id
+    //delete req.body._id //removendo o ID do body para o update não apresentar o erro 66
     /* #swagger.tags = ['Prestadores']
       #swagger.description = 'Endpoint que permite excluir um prestador filtrando pelo id' 
       */

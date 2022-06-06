@@ -1,8 +1,8 @@
 //Selecione o database
-use('dogWalker')
+use('prestadorBase')
 
 // Remove a collection
-db.usuarios.drop()
+//db.usuarios.drop()
 
 /* Cria a collection com a validação do schema
    Saiba mais em: https://docs.mongodb.com/manual/core/schema-validation/
