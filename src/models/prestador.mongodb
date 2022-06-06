@@ -32,6 +32,10 @@ db.createCollection('prestador', {
                     bsonType: 'string',
                     description: 'Serviço prestado'
                 },
+                obs: {
+                    bsonType: 'string',
+                    description: 'Observações do serviço'
+                },
                 ativo: {
                     bsonType: 'bool',
                     description: 'Está ativo?'
@@ -39,54 +43,11 @@ db.createCollection('prestador', {
                 avatar: {
                     bsonType: 'string',
                     description: 'Iniciais do prestador'
-                },
-                testemunhos: {
-                    bsonType: "object",
-                    required: ["usuario", "estrelas", "texto"],
-                    properties: {
-                        usuario: {
-                            bsonType: "string",
-                            description: "O id do usuário que fez a avaliação"
-                        },
-                        estrelas: {
-                            bsonType: "double",
-                            minimum: 0,
-                            maximum: 5,
-                            description: "A nota deve ser de 0 a 5"
-                        },
-                        texto: {
-                            bsonType: "string",
-                            description: "Texto do Testemunho"
-                        },
-                    }
-                },
-                fotos: {
-                    bsonType: "object",
-                    required: ["url"],
-                    properties: {
-                        url: {
-                            bsonType: "string",
-                            description: "URL da imagem"
-                        }
-                    }
-                },
-                servicos: {
-                    bsonType: "object",
-                    required: ["descricao", "preco"],
-                    properties: {
-                        preco: {
-                            bsonType: "double",
-                            minimum: 0,
-                            description: "O preço não pode ser negativo"
-                        },
-                        descricao: {
-                            bsonType: "string",
-                            description: "Descrição do Serviço oferecido"
-                        },
-                    }
+                }
+                
                 }
             }
-        }
+        
     },
     validationLevel: 'off', //strict-> aplica no insert e no update. moderate apenas no insert or off
     validationAction: 'error' //error->rejeita o documento ou warn->registra no log mas permite a inclusão
@@ -96,155 +57,17 @@ db.createCollection('prestador', {
 //Criando um índice único no campo email
 db.prestador.createIndex({ 'email': 1 }, { unique: true })
 
-//Criando um GeoIndex no campo localizacao
-db.prestador.createIndex({localizacao: "2dsphere" } )
-use('prestadorBase')
 //Insere um novo registro
 db.prestador.insertOne({
     "nome": "Aparecida Ribeiro",
     "email": "cida@dog.com.br",
-    "celular": "(11)98267-4139",
+    "celular": "11982674139",
+    "servico": "11982674139",
+    "obs": "11982674139",
     "ativo": true,
     "avatar": "https://source.unsplash.com/featured/?woman",
-    "localizacao":{type:"Point",coordinates:[-23.287734,-47.295617]},
-    "testemunhos": [
-        {
-            "usuario": "Flávio Passadela",
-            "estrelas": 4.2,
-            "texto": "Ótima profissional! Super recomendo!"
-        },
-        {
-            "usuario": "Simone Nunes",
-            "estrelas": 5,
-            "texto": "Simplesmente a melhor! Nunca me deixou na mão! Super indico!"
-        }
-    ],
-    "fotos": [
-        { "url": "https://source.unsplash.com/featured/?dog" },
-        { "url": "https://source.unsplash.com/featured/?puppy" }
-    ],
-    "servicos": [
-        {
-            "descricao": "Serviço de diarista",
-            "preco": 80.00
-        },
-        {
-            "descricao": "Cuidadora diária",
-            "preco": 60.00
-        }
-    ]
 })
 
-db.prestador.insertOne({
-    "nome": "Antonio Sebastião Jr",
-    "email":"tiao@nannydog.com.br",
-    "celular": "(11)98413-1397",
-    "ativo": true,
-    "avatar": "https://source.unsplash.com/featured/?man",
-    "localizacao":{type:"Point",coordinates:[-23.264474,-47.298685]},
-    "testemunhos": [
-        {
-            "usuario": "Luiz Thiago Mendonça",
-            "estrelas": 2.5,
-            "texto": "Não gostei. O cara é muito descuidado"
-        },
-        {
-            "usuario": "Priscila Mendes Cipriano",
-            "estrelas": 2.9,
-            "texto": "Ele não é muito caprichoso, e pisa na bola com o horário."
-        }
-    ],
-    "fotos": [
-        { "url": "https://source.unsplash.com/featured/?dog" },
-        { "url": "https://source.unsplash.com/featured/?bulldog" }
-    ],
-    "servicos": [
-        {
-            "descricao": "Técnico eletricista",
-            "preco": 100.00
-        },
-        {
-            "descricao": "Técnico hidráulico",
-            "preco": 100.00
-        }
-    ]
-})
-
-db.prestador.insertOne({
-    "nome": "Waltinho Cabreúva",
-    "email": "waltinho@dogsitter.com.br",
-    "estrelas": 4.2,
-    "celular": "(11)99142-7778",
-    "ativo": true,
-    "avatar": "https://source.unsplash.com/featured/?man",
-    "localizacao":{type:"Point",coordinates:[-23.306929,-47.132217]},
-    "testemunhos": [
-        {
-            "usuario": "618a803539510367711cdf37",
-            "estrelas": 4.5,
-            "texto": "Ótimo profissional! Super recomendo!"
-        },
-        {
-            "usuario": "618a803539510367711cdf37",
-            "estrelas": 5,
-            "texto": "Simplesmente o melhor!❤️"
-        }
-    ],
-    "fotos": [
-        { "url": "https://source.unsplash.com/featured/?pitbull" },
-        { "url": "https://source.unsplash.com/featured/?dachshund" }
-    ],
-    "servicos": [
-        {
-            "descricao": "Técnico hidráulico",
-            "preco": 95.00
-        },
-        {
-            "descricao": "Pintor",
-            "preco": 80.00
-        }
-    ]
-})
-
-
-//Retornando a nota média a partir dos testemunhos ordenado pela maior nota
-db.prestador.aggregate([
-  { $match : { nome : /a/i } },
-  { $unwind : '$testemunhos' },
-  { $group : { _id : '$nome', notaMedia : { $avg : '$testemunhos.estrelas' } } },
-  { $sort : { notaMedia : -1 } }
-]).pretty()
-
-//Lista todos os registros próximos em um raio de até 10km, calculando a distância em Km
-db.prestador.aggregate([{
-   $geoNear:{
-      near:{
-         type:"Point",
-         coordinates:[-23.265700,-47.299120]},
-         distanceField: "distancia.calculada",
-         maxDistance: (10 * 1609.34), // milhas para metros
-         distanceMultiplier: 0.000621371, // metros para milhas
-         spherical: true
-         }
-         }]).pretty()
-
-//Retornando a lista completa dos prestadores, calculando nota média e distância a partir da coordenada passada.
-db.prestador.aggregate([
-      { $geoNear:{
-      near:{
-         type:"Point",
-         coordinates:[-23.265700,-47.299120]},
-         distanceField: "distancia",
-         maxDistance: (20 * 1609.34), // milhas para metros - Máximo 20km
-         distanceMultiplier: 0.000621371, // metros para milhas
-         spherical: true
-         }},
-  { $match : { nome : /a/i } },
-  { $unwind : '$testemunhos' },
-  { $group : { _id : {email: '$email', distancia: '$distancia'}, notaMedia : { $avg : '$testemunhos.estrelas' } } },
-  { $lookup: {from: "prestador", localField: "_id.email", foreignField: "email", as: "detalhes"}},
-  { $sort : { "_id.distancia":1, notaMedia : -1 } }
-])
 
 //Lista um registro pelo Id
 db.prestador.find({ '_id': { $eq: ObjectId('61891d38a64a453659f55c56') } })

@@ -14,7 +14,8 @@ const { db, ObjectId } = await connectToDatabase()
 const validaPrestador = [
     check('nome', 'Nome do Prestador é obrigatório').not().isEmpty(),
     check('servico', 'Informar o serviço do Prestador é obrigatório').not().isEmpty(),
-    check('celular', 'O celular deve ser um número').isNumeric()
+    check('celular', 'O celular deve ser um número').isNumeric(),
+    check('obs', 'Breve consideraçãosobre do profissional').not().isEmpty()
 ]
 
 
@@ -157,5 +158,6 @@ router.delete('/:id', async (req, res) => {
         .then(result => res.status(202).send(result))
         .catch(err => res.status(400).json(err))
 })
+
 
 export default router

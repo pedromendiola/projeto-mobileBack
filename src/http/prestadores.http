@@ -23,27 +23,7 @@ Content-Type: application/json
 POST {{baseURL}}/prestadores
 Content-Type: application/json
 
-{
-   "cnpj": "33719377000158",
-   "razao_social": "AIMEEVET SERVICOS VETERINÁRIOS S/A.",
-   "nome_fantasia": "",
-   "ddd_telefone_1": "1176018050",
-   "ddd_telefone_2": "",
-   "cep": "04776150",
-   "descricao_tipo_de_logradouro": "AV",
-   "logradouro": "MARIO DE OLIVEIRA",
-   "numero": "421",
-   "municipio": "ITU",
-   "bairro": "JARDIM PAULISTA II",
-   "uf": "SP",
-   "porte": "MICRO EMPRESA",
-   "natureza_juridica": "Empresa Individual de Responsabilidade Limitada (de Natureza Empresária)",
-   "cnae_fiscal": 7500100,
-   "cnae_fiscal_descricao": "Atividades veterinárias",
-   "data_inicio_atividade": "2019-04-30",
-   "descricao_situacao_cadastral": "ATIVA",
-   "localizacao":{"type":"Point","coordinates":[23.28861,47.31145]}
-}
+c
 
 ### 
 // DELETE - Apaga um prestador através do id informado
@@ -57,25 +37,12 @@ Content-Type: application/json
 
 {
    "_id": "6267f34532ae23b306a82e20",
-   "cnpj": "33719377000156",
-   "razao_social": "AIMEEVET SERVICOS VETERINARIOS EIRELI",
-   "nome_fantasia": "",
-   "ddd_telefone_1": "1176018050",
-   "ddd_telefone_2": "",
-   "cep": "04776150",
-   "descricao_tipo_de_logradouro": "AV",
-   "logradouro": "MARIO DE OLIVEIRA",
-   "numero": "421",
-   "municipio": "ITU",
-   "bairro": "JARDIM PAULISTA II",
-   "uf": "SP",
-   "porte": "MICRO EMPRESA",
-   "natureza_juridica": "Empresa Individual de Responsabilidade Limitada (de Natureza Empresária)",
-   "cnae_fiscal": 7500100,
-   "cnae_fiscal_descricao": "Atividades veterinárias",
-   "data_inicio_atividade": "2019-05-24",
-   "descricao_situacao_cadastral": "ATIVA",
-   "localizacao":{"type":"Point","coordinates":[-23.28861,-47.31145]}
+   "nome": "Pedro",
+   "email": "pedro@gmail.com",
+   "celular": "1233321313",
+   "servico": "Pintor",
+   "obs": "Caprichoso",
+   "ativo": "",
 }
 
 
